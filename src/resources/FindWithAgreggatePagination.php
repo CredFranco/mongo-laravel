@@ -75,13 +75,18 @@ trait FindWithAgreggatePagination
         if ($bson instanceof \MongoDB\Model\BSONDocument || $bson instanceof \MongoDB\Model\BSONArray) {
             $bson = $bson->getArrayCopy();
         }
-
+    
         if (is_array($bson)) {
+            $converted = [];
+    
             foreach ($bson as $key => $value) {
-                $bson[$key] = $this->bsonToArray($value);
+                // Recursivamente trata subdocumentos/arrays
+                $converted[$key] = $this->bsonToArray($value);
             }
+    
+            return $converted;
         }
-
+    
         return $bson;
     }
 }
