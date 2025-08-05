@@ -55,7 +55,7 @@ trait FindWithAgreggatePagination
         // Busca dados com paginação
         $cursor = $collection->aggregate($pipeline);
         $items = array_map(function ($item) {
-            return $this->bsonToArray($item);
+            return $this->bsonToArrayItems($item);
         }, iterator_to_array($cursor));
 
         return [
@@ -70,7 +70,7 @@ trait FindWithAgreggatePagination
     }
 
     // Conversão recursiva segura para arrays nativos
-    private function bsonToArray($bson): array
+    private function bsonToArrayItems($bson): array
     {
         if ($bson instanceof \MongoDB\Model\BSONDocument || $bson instanceof \MongoDB\Model\BSONArray) {
             $bson = $bson->getArrayCopy();
