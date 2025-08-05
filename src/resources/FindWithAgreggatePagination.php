@@ -39,7 +39,6 @@ trait FindWithAgreggatePagination
             ]
         ];
 
-        // Pipeline para contar total
         $countPipeline = array_merge($pipeline, [
             ['$count' => 'total']
         ]);
@@ -47,15 +46,15 @@ trait FindWithAgreggatePagination
         $countResult = iterator_to_array($collection->aggregate($countPipeline));
         $total = $countResult[0]['total'] ?? 0;
 
-        // Paginação
         $pipeline[] = ['$sort' => ['_id' => -1]];
         $pipeline[] = ['$skip' => $skip];
         $pipeline[] = ['$limit' => $limit];
 
-        // Busca dados com paginação
         $cursor = $collection->aggregate($pipeline);
+
         $items = array_map(function ($item) {
-            return $this->bsonToArrayItems($item);
+            $array = $this->recursiveBsonToArray($item);
+            return $this->flattenSingleValueArrays($array);
         }, iterator_to_array($cursor));
 
         return [
@@ -69,24 +68,35 @@ trait FindWithAgreggatePagination
         ];
     }
 
-    // Conversão recursiva segura para arrays nativos
-    private function bsonToArrayItems($bson): array
+    private function recursiveBsonToArray($bson)
     {
         if ($bson instanceof \MongoDB\Model\BSONDocument || $bson instanceof \MongoDB\Model\BSONArray) {
             $bson = $bson->getArrayCopy();
         }
-    
+
         if (is_array($bson)) {
-            $converted = [];
-    
             foreach ($bson as $key => $value) {
-                // Recursivamente trata subdocumentos/arrays
-                $converted[$key] = $this->bsonToArray($value);
+                $bson[$key] = $this->recursiveBsonToArray($value);
             }
-    
-            return $converted;
         }
-    
+
         return $bson;
+    }
+
+    private function flattenSingleValueArrays(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                // Se for array com 1 elemento e chave 0, substitui pelo valor interno
+                if (count($value) === 1 && array_key_exists(0, $value)) {
+                    $data[$key] = $this->flattenSingleValueArrays($value[0]);
+                } else {
+                    // Senão, aplica recursivamente
+                    $data[$key] = $this->flattenSingleValueArrays($value);
+                }
+            }
+        }
+
+        return $data;
     }
 }
