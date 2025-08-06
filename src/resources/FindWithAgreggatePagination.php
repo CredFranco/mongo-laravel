@@ -15,8 +15,6 @@ trait FindWithAgreggatePagination
 
         $collection = $this->db->selectCollection($this->collection);
 
-        $pipeline = [];
-
         if (!empty($filter)) {
             $pipeline[] = ['$match' => $filter];
         }
