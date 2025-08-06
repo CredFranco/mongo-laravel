@@ -6,10 +6,7 @@ trait FindWithAgreggatePagination
 {
     public function findWithAgreggate(
         array $filter = [],
-        string $from,
-        string $localField,
-        string $foreignField,
-        string $as,
+        array $pipeline = [],
         int $limit = 10,
         int $page = 1
     ): array {
@@ -23,21 +20,6 @@ trait FindWithAgreggatePagination
         if (!empty($filter)) {
             $pipeline[] = ['$match' => $filter];
         }
-
-        $pipeline[] = [
-            '$lookup' => [
-                'from'         => $from,
-                'localField'   => $localField,
-                'foreignField' => $foreignField,
-                'as'           => $as
-            ]
-        ];
-
-        $pipeline[] = [
-            '$match' => [
-                $as . '.0' => ['$exists' => true]
-            ]
-        ];
 
         $countPipeline = array_merge($pipeline, [
             ['$count' => 'total']
