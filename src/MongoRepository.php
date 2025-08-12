@@ -4,12 +4,12 @@ namespace Mongo;
 
 use Illuminate\Support\Facades\DB;
 use Mongo\resources\{
-    FindOne, FindAllPaginate, FindWithLimit, ApplyLimit, CreateData, GenerateArray, FindAll, FindWithAgreggatePagination
+    FindOne, FindAllPaginate, FindWithLimit, ApplyLimit, CreateData, GenerateArray, FindAll, FindWithAgreggatePagination,UpdateData
 };
 
 class MongoRepository
 {
-    use FindOne, FindAllPaginate, FindWithLimit, ApplyLimit, CreateData, GenerateArray, FindAll, FindWithAgreggatePagination;
+    use FindOne, FindAllPaginate, FindWithLimit, ApplyLimit, CreateData, GenerateArray, FindAll, FindWithAgreggatePagination,UpdateData;
 
     protected $db;
 
