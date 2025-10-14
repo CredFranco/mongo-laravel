@@ -26,7 +26,9 @@ trait FindWithAgreggatePagination
         $countResult = iterator_to_array($collection->aggregate($countPipeline));
         $total = $countResult[0]['total'] ?? 0;
 
-        if(!isset($pipeline[1]['$sort'])){
+        $keys = array_map('key', $pipeline);
+
+        if(!in_array('$sort', $keys)){
 
             $pipeline[] = ['$sort' => ['_id' => -1]];
         }
