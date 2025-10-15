@@ -15,7 +15,6 @@ trait FindAllPaginate
         $pipeline = [
             'limit' => $limit,
             'skip' => $skip,
-            'sort' => ['_id' => -1]
         ];
 
         $keys = array_map('key', $filter);
