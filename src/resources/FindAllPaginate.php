@@ -12,11 +12,20 @@ trait FindAllPaginate
 
         $collection = $this->db->selectCollection($this->collection);
 
-        $data = $collection->find($filter, [
+        $pipeline = [
             'limit' => $limit,
             'skip' => $skip,
             'sort' => ['_id' => -1]
-        ]);
+        ];
+
+        $keys = array_map('key', $filter);
+
+        if(!in_array('$sort', $keys)){
+
+            $pipeline['$sort'] = ['_id' => -1];
+        }
+
+        $data = $collection->find($filter, $pipeline);
 
         $total = $collection->countDocuments($filter);
 
