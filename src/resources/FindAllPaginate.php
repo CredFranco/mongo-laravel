@@ -17,11 +17,14 @@ trait FindAllPaginate
             'skip' => $skip,
         ];
 
-        $keys = array_map('key', $filter);
+        $keys = array_keys($filter);
 
-        if(!in_array('$sort', $keys)){
+        if(!in_array('sort', $keys)){
 
-            $pipeline['$sort'] = ['_id' => -1];
+            $pipeline['sort'] = ['_id' => -1];
+        }else{
+            $pipeline['sort'] = $filter['sort'];
+            unset($filter['sort']);
         }
 
         $data = $collection->find($filter, $pipeline);
