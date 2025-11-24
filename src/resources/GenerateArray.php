@@ -16,6 +16,8 @@ trait GenerateArray
                 return $this->bsonToArray(array_map(function ($item) {
                     if($item instanceof \MongoDB\Model\BSONArray){
                         return $this->bsonToArray($item);
+                    }else{
+                        return $item;
                     }
 
                 }, iterator_to_array($this->search)));
