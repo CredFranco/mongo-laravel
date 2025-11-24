@@ -4,7 +4,7 @@ namespace Mongo\resources;
 
 trait GenerateArray
 {
-    public function toArray(): array
+    public function toArray($transformInternalData = false): array
     {
         if (is_null($this->search)) {
             return [];
@@ -12,6 +12,12 @@ trait GenerateArray
 
         // Se for um BSONDocument (ex: findOne), converter para array
         if ($this->search instanceof \MongoDB\Model\BSONDocument) {
+            if($transformInternalData){
+                return $this->bsonToArray(array_map(function ($item) {
+
+                    return $this->bsonToArray($item);
+                }, iterator_to_array($this->search)));
+            }
             return $this->bsonToArray($this->search);
         }
 
