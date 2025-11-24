@@ -14,8 +14,10 @@ trait GenerateArray
         if ($this->search instanceof \MongoDB\Model\BSONDocument) {
             if($transformInternalData){
                 return $this->bsonToArray(array_map(function ($item) {
+                    if($item instanceof \MongoDB\Model\BSONArray){
+                        return $this->bsonToArray($item);
+                    }
 
-                    return $this->bsonToArray($item);
                 }, iterator_to_array($this->search)));
             }
             return $this->bsonToArray($this->search);
