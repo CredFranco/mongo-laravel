@@ -75,7 +75,8 @@ trait FindWithAgreggatePagination
             if (is_array($value)) {
                 // Se for array com 1 elemento e chave 0, substitui pelo valor interno
                 if (count($value) === 1 && array_key_exists(0, $value)) {
-                    $data[$key] = $this->flattenSingleValueArrays($value[0]);
+
+                    $data[$key] = $this->flattenSingleValueArrays($value);
                 } else {
                     // Senão, aplica recursivamente
                     $data[$key] = $this->flattenSingleValueArrays($value);
